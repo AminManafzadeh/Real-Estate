@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-weight: 200;
+}
+
+html,
+body {
+  max-width: 1200px;
+  overflow-x: hidden;
+  margin: auto;
+  padding: 0 10px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+.card {
+  display: flex;
+  margin: 10px 0;
+}
+.card input {
+  width: 300px;
+  border: 1px #304ffe dashed;
+  color: grey;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1rem;
+  height: 30px;
+  margin-left: 10px;
+}
+
+.card input:focus {
+  border: 1px #304ffe solid;
+  outline: none;
+}
+
+.card button {
+  margin: 0;
+  color: #db0505;
+  background-color: #fff;
+  border: 1px #db0505 solid;
+  display: flex;
+  align-items: center;
+  line-height: 10px;
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+
+.label {
+  @apply text-mainBlue font-normal;
+}
+.input {
+  @apply border border-dashed border-mainBlue rounded-[5px] p-[10px] h-10;
+}
+.button {
+  @apply border-none bg-mainBlue text-mainWhite text-xl font-normal rounded-[5px] transition-all ease-in duration-100 cursor-pointer py-2 px-0;
+}
+.inputArea {
+  @apply mb-10 w-[300px] border border-dashed border-mainBlue text-gray rounded-[5px] p-[10px] h-10;
+}
