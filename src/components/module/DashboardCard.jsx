@@ -32,7 +32,7 @@ function DashboardCard({ data }) {
   };
 
   return (
-    <div className="flex border-2 border-solid border-secondBlue rounded-[15px] mb-5">
+    <div className="flex items-center flex-col sm:items-end sm:flex-row border-2 border-solid border-secondBlue rounded-[15px] mb-5 p-3">
       <Card data={data} />
       <div className="flex items-end justify-between p-[10px] w-full">
         <button

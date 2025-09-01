@@ -2,8 +2,8 @@ import Profile from "@/models/Profile";
 import DetailsPage from "@/template/DetailsPage";
 import connectDB from "@/utils/connectDB";
 
-export async function generateStaticParams() {
-  const res = await fetch(`${process.env.NEXTAUTH_URI}/api/profile`, {
+export async function generateMetadata() {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/profile`, {
     cache: "force-cache",
   });
 
@@ -18,10 +18,10 @@ export async function generateStaticParams() {
 }
 
 export default async function ProfileDetail({ params }) {
-  const { profileId } = await params;
+  const { profileId } = params;
 
   const res = await fetch(
-    `${process.env.NEXTAUTH_URI}/api/profile/${profileId}`,
+    `${process.env.NEXTAUTH_URL}/api/profile/${profileId}`,
     {
       cache: "force-cache",
       next: { revalidate: 60 },

@@ -37,7 +37,7 @@ function HomePage() {
           ))}
         </div>
 
-        <div className="my-[100px]">
+        <div className="mt-[50px] mb-[25px">
           <h3 className="font-semibold text-[2rem] text-center text-mainBlue">
             شهر های پر بازدید
           </h3>

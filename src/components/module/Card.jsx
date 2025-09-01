@@ -26,7 +26,7 @@ function Card({ data }) {
   };
 
   return (
-    <div className="w-[250px] border-2 border-solid border-secondBlue rounded-[10px] p-[10px] m-[10px]">
+    <div className="w-full sm:w-[280px] border-2 border-solid border-secondBlue rounded-[10px] p-[10px] ">
       <div>{icons[category]}</div>
       <p className="font-normal my-[10px]">{title}</p>
       <p className="flex text-gray text-sm">

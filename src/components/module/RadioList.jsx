@@ -9,7 +9,7 @@ function RadioList({ profileData, setProfileData }) {
     <div className="mb-10">
       <p className="text-lg mbb-[5px]">دسته بندی</p>
       <div className="flex">
-        <div className="flex items-center justify-between bg-[#304ffe18] text-mainBlue ml-[30px] w-[70px] py-1 px-2 rounded-[5px] cursor-pointer">
+        <div className="flex items-center justify-between bg-[#304ffe18] text-mainBlue ml-[10px] sm:ml-[30px] w-[70px] py-1 px-2 rounded-[5px] cursor-pointer">
           <label htmlFor="villa">ویلا</label>
           <input
             type="radio"
@@ -21,7 +21,7 @@ function RadioList({ profileData, setProfileData }) {
           />
         </div>
 
-        <div className="flex items-center justify-between bg-[#304ffe18] text-mainBlue ml-[30px] w-[90px] py-1 px-2 rounded-[5px] cursor-pointer">
+        <div className="flex items-center justify-between bg-[#304ffe18] text-mainBlue ml-[10px] sm:ml-[30px] w-[90px] py-1 px-2 rounded-[5px] cursor-pointer">
           <label htmlFor="apartment">آپارتمان</label>
           <input
             type="radio"
@@ -33,7 +33,7 @@ function RadioList({ profileData, setProfileData }) {
           />
         </div>
 
-        <div className="flex items-center justify-between bg-[#304ffe18] text-mainBlue ml-[30px] w-[70px] py-1 px-2 rounded-[5px] cursor-pointer">
+        <div className="flex items-center justify-between bg-[#304ffe18] text-mainBlue ml-[10px] sm:ml-[30px] w-[70px] py-1 px-2 rounded-[5px] cursor-pointer">
           <label htmlFor="store">مغازه</label>
           <input
             type="radio"
@@ -45,7 +45,7 @@ function RadioList({ profileData, setProfileData }) {
           />
         </div>
 
-        <div className="flex items-center justify-between bg-[#304ffe18] text-mainBlue ml-[30px] w-[70px] py-1 px-2 rounded-[5px] cursor-pointer">
+        <div className="flex items-center justify-between bg-[#304ffe18] text-mainBlue ml-[10px] sm:ml-[30px] w-[70px] py-1 px-2 rounded-[5px] cursor-pointer">
           <label htmlFor="office">دفتر</label>
           <input
             type="radio"

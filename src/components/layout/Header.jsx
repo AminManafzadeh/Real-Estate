@@ -15,7 +15,7 @@ function Header() {
   };
 
   return (
-    <header className="flex justify-between items-center p-5 my-5 rounded-[10px] bg-mainBlue text-mainWhite">
+    <header className="flex flex-col gap-2 sm:flex-row justify-between items-center p-5 my-5 rounded-[10px] bg-mainBlue text-mainWhite">
       <div>
         <ul className="list-none flex gap-x-7 sm:gap-x-6">
           <li>

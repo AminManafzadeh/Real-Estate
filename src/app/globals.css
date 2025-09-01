@@ -71,5 +71,5 @@ textarea {
   @apply border-none bg-mainBlue text-mainWhite text-xl font-normal rounded-[5px] transition-all ease-in duration-100 cursor-pointer py-2 px-0;
 }
 .inputArea {
-  @apply mb-10 w-[300px] border border-dashed border-mainBlue text-gray rounded-[5px] p-[10px] h-10;
+  @apply mb-10 w-[270px] sm:w-[300px] border border-dashed border-mainBlue text-gray rounded-[5px] p-[10px] h-10;
 }
