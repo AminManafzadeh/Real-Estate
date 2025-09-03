@@ -1,25 +1,23 @@
 import BuyResidentialPage from "@/template/BuyResidentialPage";
+import { getProfiles } from "@/lib/actions/profile-actions";
 
 async function BuyResidential({ searchParams }) {
-  const res = await fetch("http://localhost:3000/api/profile", {
-    cache: "no-store",
-  });
-  const params = await searchParams;
-  const data = await res.json();
-  console.log(data.data);
-  if (data.error) return <h3>مشکلی پیش آمده است</h3>;
-  console.log(data);
+  try {
+    const params = await searchParams;
+    let profiles = await getProfiles();
 
-  let finalData = data.data;
-  if (params.category) {
-    finalData = finalData.filter((item) => item.category === params.category);
+    if (params.category) {
+      profiles = profiles.filter((item) => item.category === params.category);
+    }
+
+    return (
+      <div>
+        <BuyResidentialPage data={profiles} />
+      </div>
+    );
+  } catch (error) {
+    return <h3>مشکلی پیش آمده است</h3>;
   }
-
-  return (
-    <div>
-      <BuyResidentialPage data={finalData} />
-    </div>
-  );
 }
 
 export default BuyResidential;

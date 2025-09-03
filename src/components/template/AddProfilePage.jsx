@@ -6,8 +6,9 @@ import RadioList from "@/module/RadioList";
 import TextInput from "@/module/TextInput";
 import TextList from "@/module/TextList";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import toast from "react-hot-toast";
+import { createProfile, updateProfile } from "@/lib/actions/profile-actions";
 
 function AddProfilePage({ data }) {
   const [profileData, setProfileData] = useState({
@@ -23,6 +24,7 @@ function AddProfilePage({ data }) {
     amenities: [],
   });
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   useEffect(() => {
@@ -31,38 +33,52 @@ function AddProfilePage({ data }) {
 
   const handleSubmit = async () => {
     setLoading(true);
-    const res = await fetch("/api/profile", {
-      method: "POST",
-      body: JSON.stringify(profileData),
-      headers: { "Contetnt-Type": "application/json" },
-    });
 
-    const data = await res.json();
-    setLoading(false);
-    if (data.error) {
-      toast.error(data?.error);
-    } else {
-      toast.success(data?.message);
-      router.refresh();
-    }
+    startTransition(async () => {
+      try {
+        const formData = new FormData();
+        Object.keys(profileData).forEach((key) => {
+          if (key === "amenities" || key === "rules") {
+            formData.append(key, JSON.stringify(profileData[key]));
+          } else {
+            formData.append(key, profileData[key]);
+          }
+        });
+
+        const result = await createProfile(formData);
+        toast.success(result.message);
+        router.push("/dashboard/my-profiles");
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
+    });
   };
 
   const handleEdit = async () => {
     setLoading(true);
-    const res = await fetch("/api/profile", {
-      method: "PATCH",
-      body: JSON.stringify(profileData),
-      headers: { "Content-Type": "application/json" },
-    });
 
-    const data = await res.json();
-    setLoading(false);
-    if (data?.error) {
-      toast.error(data?.error);
-    } else {
-      toast.success(data?.message);
-      router.refresh();
-    }
+    startTransition(async () => {
+      try {
+        const formData = new FormData();
+        Object.keys(profileData).forEach((key) => {
+          if (key === "amenities" || key === "rules") {
+            formData.append(key, JSON.stringify(profileData[key]));
+          } else {
+            formData.append(key, profileData[key]);
+          }
+        });
+
+        const result = await updateProfile(data._id, formData);
+        toast.success(result.message);
+        router.push("/dashboard/my-profiles");
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
+    });
   };
 
   return (
@@ -125,19 +141,21 @@ function AddProfilePage({ data }) {
         profileData={profileData}
         setProfileData={setProfileData}
       />
-      {loading ? (
-        <Loading loading={loading} size="40" />
+      {loading || isPending ? (
+        <Loading loading={loading || isPending} size="40" />
       ) : data ? (
         <button
           onClick={handleEdit}
-          className="border-none bg-mainBlue text-mainWhite rounded-[5px] transition-all ease-in duration-100 cursor-pointer p-[10px] hover:opacity-90"
+          disabled={loading || isPending}
+          className="border-none bg-mainBlue text-mainWhite rounded-[5px] transition-all ease-in duration-100 cursor-pointer p-[10px] hover:opacity-90 disabled:opacity-50"
         >
           ویرایش آگهی
         </button>
       ) : (
         <button
           onClick={handleSubmit}
-          className="border-none bg-mainBlue text-mainWhite rounded-[5px] transition-all ease-in duration-100 cursor-pointer p-[10px] hover:opacity-90"
+          disabled={loading || isPending}
+          className="border-none bg-mainBlue text-mainWhite rounded-[5px] transition-all ease-in duration-100 cursor-pointer p-[10px] hover:opacity-90 disabled:opacity-50"
         >
           ثبت آگهی
         </button>

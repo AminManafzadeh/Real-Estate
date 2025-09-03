@@ -2,15 +2,17 @@
 
 import Card from "@/module/Card";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit } from "react-icons/fi";
 import Loading from "./Loading";
+import { deleteProfile } from "@/lib/actions/profile-actions";
 
 function DashboardCard({ data }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const handleEdit = () => {
     router.push(`/dashboard/my-profiles/${data?._id}`);
@@ -18,17 +20,18 @@ function DashboardCard({ data }) {
 
   const handleDelete = async () => {
     setLoading(true);
-    const res = await fetch(`/api/profile/delete/${data?._id}`, {
-      method: "DELETE",
+
+    startTransition(async () => {
+      try {
+        const result = await deleteProfile(data?._id);
+        toast.success(result.message);
+        router.refresh();
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
     });
-    const result = await res.json();
-    setLoading(false);
-    if (result?.error) {
-      toast.error(result?.error);
-    } else {
-      toast.success(result?.message);
-      router.refresh();
-    }
   };
 
   return (
@@ -43,10 +46,11 @@ function DashboardCard({ data }) {
         </button>
         <button
           onClick={handleDelete}
-          className="flex justify-center items-center w-[48%] bg-mainWhite cursor-pointer h-10 rounded-lg border border-solid border-red text-red "
+          disabled={loading || isPending}
+          className="flex justify-center items-center w-[48%] bg-mainWhite cursor-pointer h-10 rounded-lg border border-solid border-red text-red disabled:opacity-50"
         >
-          {loading ? (
-            <Loading loading={loading} size={25} />
+          {loading || isPending ? (
+            <Loading loading={loading || isPending} size={25} />
           ) : (
             <>
               حذف آگهی <AiOutlineDelete className="text-lg mr-[10px]" />

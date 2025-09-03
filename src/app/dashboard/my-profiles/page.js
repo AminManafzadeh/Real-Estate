@@ -1,31 +1,25 @@
 import { authOption } from "@/app/api/auth/[...nextauth]/route";
-import User from "@/models/User";
 import MyProfilesPage from "@/template/MyProfilesPage";
-import connectDB from "@/utils/connectDB";
 import { getServerSession } from "next-auth";
+import { getUserProfiles } from "@/lib/actions/profile-actions";
 
 async function MyProfiles() {
-  await connectDB();
-  const session = await getServerSession(authOption);
-  console.log(session);
-  const [user] = await User.aggregate([
-    { $match: { email: session.user.email } },
-    {
-      $lookup: {
-        from: "profiles",
-        foreignField: "userId",
-        localField: "_id",
-        as: "profiles",
-      },
-    },
-  ]);
-  console.log(user);
+  try {
+    const session = await getServerSession(authOption);
+    if (!session) {
+      throw new Error("لطفا وارد حساب کاربری خود شوید");
+    }
 
-  return (
-    <div>
-      <MyProfilesPage profiles={user.profiles} />
-    </div>
-  );
+    const profiles = await getUserProfiles(session.user.email);
+
+    return (
+      <div>
+        <MyProfilesPage profiles={profiles} />
+      </div>
+    );
+  } catch (error) {
+    return <h3>مشکلی پیش آمده است</h3>;
+  }
 }
 
 export default MyProfiles;

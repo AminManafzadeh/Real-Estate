@@ -2,41 +2,49 @@
 
 import { sp } from "@/utils/replaceNumber";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import Loading from "./Loading";
 import { useRouter } from "next/navigation";
+import { deleteProfile, publishProfile } from "@/lib/actions/profile-actions";
 
 function AdminCard({ data }) {
   const { title, description, location, price, _id } = data;
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleDelete = async () => {
     setDeleteLoading(true);
-    const res = await fetch(`/api/profile/delete/${_id}`, { method: "DELETE" });
-    const result = await res.json();
-    setDeleteLoading(false);
-    if (result?.error) {
-      toast.error(result?.error);
-    } else {
-      toast.success(result?.message);
-      router.refresh();
-    }
+
+    startTransition(async () => {
+      try {
+        const result = await deleteProfile(_id);
+        toast.success(result.message);
+        router.refresh();
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setDeleteLoading(false);
+      }
+    });
   };
 
   const handlePublish = async () => {
     setLoading(true);
-    const res = await fetch(`/api/profile/publish/${_id}`, { method: "PATCH" });
-    const result = await res.json();
-    setLoading(false);
-    if (result?.error) {
-      toast.error(result?.error);
-    } else {
-      toast.success(result?.message);
-      router.refresh();
-    }
+
+    startTransition(async () => {
+      try {
+        const result = await publishProfile(_id);
+        toast.success(result.message);
+        router.refresh();
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
+    });
   };
 
   return (
@@ -60,16 +68,22 @@ function AdminCard({ data }) {
         </Link>
         <button
           onClick={handlePublish}
-          className="bg-green border-none py-[5px] px-[15px] font-normal text-mainWhite rounded-[5px] cursor-pointer mt-5 transition-all ease-in duration-100 hover:text-[#000]"
+          disabled={loading || isPending}
+          className="bg-green border-none py-[5px] px-[15px] font-normal text-mainWhite rounded-[5px] cursor-pointer mt-5 transition-all ease-in duration-100 hover:text-[#000] disabled:opacity-50"
         >
-          {loading ? <Loading loading={loading} size={15} /> : " انتشار"}
+          {loading || isPending ? (
+            <Loading loading={loading || isPending} size={15} />
+          ) : (
+            " انتشار"
+          )}
         </button>
         <button
           onClick={handleDelete}
-          className="bg-red border-none py-[5px] px-[15px] font-normal text-mainWhite rounded-[5px] cursor-pointer mt-5 transition-all ease-in duration-100 hover:text-[#000]"
+          disabled={deleteLoading || isPending}
+          className="bg-red border-none py-[5px] px-[15px] font-normal text-mainWhite rounded-[5px] cursor-pointer mt-5 transition-all ease-in duration-100 hover:text-[#000] disabled:opacity-50"
         >
-          {deleteLoading ? (
-            <Loading loading={deleteLoading} size={15} />
+          {deleteLoading || isPending ? (
+            <Loading loading={deleteLoading || isPending} size={15} />
           ) : (
             " حذف"
           )}

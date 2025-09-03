@@ -3,14 +3,16 @@
 import Loading from "@/module/Loading";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import toast from "react-hot-toast";
+import { signupUser } from "@/lib/actions/auth-actions";
 
 function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleSignup = async (e) => {
@@ -21,19 +23,22 @@ function SignupPage() {
     }
 
     setLoading(true);
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-      headers: { "Content-type": "application/json" },
-    });
 
-    const data = await res.json();
-    setLoading(false);
-    if (res.status === 201) {
-      router.push("/signin");
-    } else {
-      toast.error(data.error);
-    }
+    startTransition(async () => {
+      try {
+        const formData = new FormData();
+        formData.append("email", email);
+        formData.append("password", password);
+
+        const result = await signupUser(formData);
+        toast.success(result.message);
+        router.push("/signin");
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
+    });
   };
 
   return (
@@ -73,15 +78,16 @@ function SignupPage() {
           value={rePassword}
           onChange={(e) => setRePassword(e.target.value)}
         />
-        {loading ? (
+        {loading || isPending ? (
           <>
-            <Loading loading={loading} size="25" />
+            <Loading loading={loading || isPending} size="25" />
           </>
         ) : (
           <button
             onClick={handleSignup}
             type="submit"
-            className="button hover:scale-105"
+            disabled={loading || isPending}
+            className="button hover:scale-105 disabled:opacity-50"
           >
             ثبت نام
           </button>

@@ -1,16 +1,15 @@
-import Profile from "@/models/Profile";
+import { getProfileById } from "@/lib/actions/profile-actions";
 import AddProfilePage from "@/template/AddProfilePage";
-import connectDB from "@/utils/connectDB";
 
 async function Edit({ params }) {
-  const { profileId } = await params;
-  console.log(profileId);
+  try {
+    const { profileId } = await params;
+    const profile = await getProfileById(profileId);
 
-  await connectDB();
-  const profile = await Profile.findOne({ _id: profileId });
-  if (!profile) return <h3>مشکلی پیش آمده لطفا دوباره امتحان کنید ...</h3>;
-
-  return <AddProfilePage data={JSON.parse(JSON.stringify(profile))} />;
+    return <AddProfilePage data={profile} />;
+  } catch (error) {
+    return <h3>مشکلی پیش آمده لطفا دوباره امتحان کنید ...</h3>;
+  }
 }
 
 export default Edit;

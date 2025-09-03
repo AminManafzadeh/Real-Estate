@@ -1,40 +1,31 @@
 import Profile from "@/models/Profile";
 import DetailsPage from "@/template/DetailsPage";
 import connectDB from "@/utils/connectDB";
+import {
+  getPublishedProfileById,
+  getProfiles,
+} from "@/lib/actions/profile-actions";
 
-export async function generateMetadata() {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/profile`, {
-    cache: "force-cache",
-  });
-
-  if (!res.ok) throw new Error("Failed to fetch profiles");
-
-  const { data } = await res.json();
-  console.log(data);
-
-  return data.map((profile) => ({
-    profileId: profile._id.toString(),
-  }));
+export async function generateStaticParams() {
+  try {
+    const profiles = await getProfiles();
+    return profiles.map((profile) => ({
+      profileId: profile._id.toString(),
+    }));
+  } catch (error) {
+    return [];
+  }
 }
 
 export default async function ProfileDetail({ params }) {
-  const { profileId } = params;
+  try {
+    const { profileId } = params;
+    const profile = await getPublishedProfileById(profileId);
 
-  const res = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/profile/${profileId}`,
-    {
-      cache: "force-cache",
-      next: { revalidate: 60 },
-    }
-  );
-  console.log(res);
-  if (!res.ok) {
+    return <DetailsPage data={profile} />;
+  } catch (error) {
     return <h3>مشکلی پیش آمده است</h3>;
   }
-
-  const profile = await res.json();
-
-  return <DetailsPage data={profile} />;
 }
 
 export async function generateMetedata({ params }) {
